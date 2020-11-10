@@ -43,15 +43,15 @@
       }
     },
     computed: {
-      width() {
+      width () {
         return window.innerWidth - realPx(20) - realPx(60) + 'px'
       }
     },
     methods: {
-      categoryText(category) {
+      categoryText (category) {
         return categoryText(category, this)
       },
-      resize() {
+      resize () {
         this.$nextTick(() => {
           this.$refs.title.forEach(item => {
             item.style.width = this.width

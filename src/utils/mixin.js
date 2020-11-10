@@ -148,6 +148,33 @@ export const storeHomeMixin = {
       'setHotSearchOffsetY',
       'setFlapCardVisible'
     ]),
-    showBookDetail (book) {}
+    showBookDetail (book) {
+      this.$router.push({
+        path: '/store/detail',
+        query: {
+          fileName: book.fileName,
+          category: book.categoryText
+      }
+      })
+    }
+  }
+}
+
+export const storeShelfMixin = {
+  computed: {
+    ...mapGetters([
+      'isEditMode',
+      'shelfList',
+      'shelfSelected',
+      'shelfTitleVisible'
+    ])
+  },
+  methods: {
+    ...mapActions([
+      'setIsEditMode',
+      'setShelfList',
+      'setShelfSelected',
+      'setShelfTitleVisible'
+    ])
   }
 }

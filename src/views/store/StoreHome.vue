@@ -3,43 +3,18 @@
     <search-bar></search-bar>
     <flap-card :data="random"></flap-card>
     <scroll :top="scrollTop" @onScroll="onScroll" ref="scroll">
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
-      <div>111111111111111111111111111111111</div>
+      <div class="banner-wrapper">
+        <div class="banner-img" :style="{backgroundImage:`url('${banner}')`}"></div>
+      </div>
+      <guess-you-like :data="guessYouLike"></guess-you-like>
+      <recommend class="recommend" :data="recommend"></recommend>
+      <featured :data="featured" :titleText="$t('home.featured')" :btnText="$t('home.seeAll')" class="featured"></featured>
+      <div class="category-list-wrapper">
+        <div class="category-book-item" v-for="(item, index) in categoryList" :key="index" @click="showBookDetail(item)">
+          <category-book :data="item"></category-book>
+        </div>
+      </div>
+      <category class="category" :data="categories"></category>
     </scroll>
   </div>
 </template>
@@ -49,20 +24,36 @@
   import Scroll from '../../components/common/Scroll'
   import FlapCard from '@/components/home/FlapCard'
   import { storeHomeMixin } from '@/utils/mixin'
-  import { home } from '../../api/store'
+  import { home } from '@/api/store'
+  import GuessYouLike from '../../components/home/GuessYouLike'
+  import Recommend from '../../components/home/Recommend'
+  import Featured from '../../components/home/Featured'
+  import CategoryBook from '../../components/home/CategoryBook'
+  import Category from '../../components/home/Category'
 
   export default {
     name: 'StoreHome',
     data () {
       return {
         scrollTop: 94,
-        random: null
+        random: null,
+        banner: null,
+        guessYouLike: null,
+        recommend: null,
+        featured: null,
+        categoryList: null,
+        categories: null
       }
     },
     components: {
+      Category,
+      CategoryBook,
+      GuessYouLike,
       SearchBar,
       Scroll,
-      FlapCard
+      FlapCard,
+      Recommend,
+      Featured
     },
     mixins: [storeHomeMixin],
     methods: {
@@ -82,6 +73,12 @@
           const data = response.data
           const randomIndex = Math.floor(Math.random() * data.random.length)
           this.random = data.random[randomIndex]
+          this.banner = data.banner
+          this.guessYouLike = data.guessYouLike
+          this.recommend = data.recommend
+          this.featured = data.featured
+          this.categoryList = data.categoryList
+          this.categories = data.categories
         }
       })
     }
@@ -93,5 +90,28 @@
   .store-home {
     width: 100%;
     height: 100%;
+    .banner-wrapper {
+      width: 100%;
+      padding: px2rem(10);
+      box-sizing: border-box;
+      .banner-img {
+        width: 100%;
+        height: px2rem(150);
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+      }
+    }
+    .recommend {
+      margin-top: px2rem(20);
+    }
+    .featured {
+      margin-top: px2rem(20);
+    }
+    .category-list-wrapper {
+      margin-top: px2rem(20);
+    }
+    .category {
+      margin-top: px2rem(20);
+    }
   }
 </style>

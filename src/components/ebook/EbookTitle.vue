@@ -27,7 +27,7 @@
     name: 'EbookTitle',
     methods: {
       back () {
-        console.log('back')
+        this.$router.go(-1)
       }
     }
   }
@@ -41,7 +41,7 @@
     left: 0;
     width: 100%;
     height: px2rem(48);
-    z-index: 101;
+    z-index: 200;
     display: flex;
     background: #fff;
     box-shadow: 0 px2rem(8) px2rem(8) rgba(0, 0, 0, .15);
