@@ -1,12 +1,12 @@
 <template>
   <transition name="fade">
-    <div class="shelf-title" v-show="shelfTitleVisible">
+    <div class="shelf-title" :class="{'hide-shadow': ifHideShadow}" v-show="shelfTitleVisible">
       <div class="shelf-title-text-wrapper">
         <span class="shelf-title-text">{{$t('shelf.title')}}</span>
         <span class="shelf-title-sub-text" v-show="isEditMode">{{selectedText}}</span>
       </div>
       <div class="shelf-title-btn-wrapper shelf-title-left">
-        <span class="shelf-title-btn-text" @click="clearCache">{{$t('shelf.clearCache')}}</span>
+        <span class="shelf-title-btn-text" @click="clearCache">{{$t( 'shelf.clearCache')}}</span>
       </div>
       <div class="shelf-title-btn-wrapper shelf-title-right">
         <span class="shelf-title-btn-text" @click="onEditClick">{{isEditMode ? $t('shelf.cancel') : $t('shelf.edit')}}</span>
@@ -20,6 +20,11 @@ import { storeShelfMixin } from '@/utils/mixin'
 
 export default {
   name: 'ShelfTitle',
+  data () {
+    return {
+      ifHideShadow: true
+    }
+  },
   computed: {
     selectedText () {
       const selectedNumber = this.shelfSelected ? this.shelfSelected.length : 0
@@ -29,10 +34,25 @@ export default {
   mixins: [storeShelfMixin],
   methods: {
     onEditClick () {
+      if (!this.isEditMode) {
+        this.setShelfSelected([])
+        this.shelfList.forEach(item => {
+          item.selected = false
+        })
+      }
       this.setIsEditMode(!this.isEditMode)
     },
     clearCache () {
       alert('clear cache')
+    }
+  },
+  watch: {
+    offsetY (offsetY) {
+      if (offsetY > 0) {
+        this.ifHideShadow = false
+      } else {
+        this.ifHideShadow = true
+      }
     }
   }
 }
@@ -46,6 +66,10 @@ export default {
     height: px2rem(42);
     background: #fff;
     z-index: 130;
+    box-shadow: 0 px2rem(2) px2rem(2) 0 rgba(0, 0, 0, .1);
+    &.hide-shadow {
+      box-shadow: none;
+    }
     .shelf-title-text-wrapper {
       position: absolute;
       top: 0;

@@ -1,6 +1,6 @@
 <template>
-  <div class="shelf-search-wrapper">
-    <div class="shelf-search">
+  <div class="shelf-search-wrapper" :class="{'search-top': ifInputClicked,'hide-shadow':ifHideShadow}">
+    <div class="shelf-search" :class="{'search-top': ifInputClicked}">
       <div class="search-wrapper">
         <div class="icon-search-wrapper">
           <span class="icon-search icon"></span>
@@ -21,26 +21,39 @@
         <div class="cancel-text">{{$t('shelf.cancel')}}</div>
       </div>
     </div>
+    <transition name="hot-search-move">
+      <div class="shelf-search-tab-wrapper" v-if="ifInputClicked">
+        <div class="shelf-search-tab-item" v-for="item in tabs" :key="item.id" @click="onTabClick(item.id)">
+          <span class="shelf-search-tab-text" :class="{'is-selected': item.id === selectedTab}">{{item.text}}</span>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
 import { setLocalStorage } from '@/utils/localStorage'
+import { storeShelfMixin } from '@/utils/mixin'
 
 export default {
   name: 'ShelfSearch',
+  mixins: [storeShelfMixin],
   data () {
     return {
       ifInputClicked: false,
-      searchText: ''
+      searchText: '',
+      selectedTab: 1,
+      ifHideShadow: true
     }
   },
   methods: {
     onSearchClick () {
       this.ifInputClicked = true
+      this.setShelfTitleVisible(false)
     },
     onCancelClick () {
       this.ifInputClicked = false
+      this.setShelfTitleVisible(true)
     },
     switchLocale () {
       if (this.lang === 'en') {
@@ -52,11 +65,44 @@ export default {
     },
     clearSearchText () {
       this.searchText = ''
+    },
+    onTabClick (id) {
+      this.selectedTab = id
     }
   },
   computed: {
     lang () {
       return this.$i18n.locale
+    },
+    tabs () {
+      return [
+        {
+          id: 1,
+          text: this.$t('shelf.default'),
+          selected: true
+        },
+        {
+          id: 2,
+          text: this.$t('shelf.progress'),
+          selected: false
+        },
+        {
+          id: 3,
+          text: this.$t('shelf.purchase'),
+          selected: false
+        }
+      ]
+    }
+  },
+  watch: {
+    offsetY (offsetY) {
+      if (offsetY > 0 && this.ifInputClicked) {
+        // 显示阴影
+        this.ifHideShadow = false
+      } else {
+        // 隐藏阴影
+        this.ifHideShadow = true
+      }
     }
   }
 }
@@ -71,6 +117,15 @@ export default {
     height: px2rem(94);
     font-size: px2rem(16);
     background: #fff;
+    box-shadow: 0 px2rem(2) px2rem(2) 0 rgba(0, 0, 0, .1);
+    &.hide-shadow {
+      box-shadow: none;
+    }
+    &.search-top {
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
     .shelf-search {
       position: absolute;
       top: px2rem(42);
@@ -79,6 +134,10 @@ export default {
       height: px2rem(52);
       z-index: 105;
       display: flex;
+      transition: top $animationTime linear;
+      &.search-top {
+        top: 0;
+      }
       .search-wrapper {
         flex: 1;
         display: flex;
@@ -134,6 +193,26 @@ export default {
         .cancel-text {
           font-size: px2rem(14);
           color: $color-blue;
+        }
+      }
+    }
+    .shelf-search-tab-wrapper {
+      position: absolute;
+      top: px2rem(52);
+      left: 0;
+      z-index: 105;
+      display: flex;
+      width: 100%;
+      height: px2rem(42);
+      .shelf-search-tab-item {
+        flex: 1;
+        @include center;
+        .shelf-search-tab-text {
+          font-size: px2rem(12);
+          color: #999;
+          &.is-selected {
+            color: $color-blue;
+          }
         }
       }
     }
