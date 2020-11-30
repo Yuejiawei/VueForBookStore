@@ -1,8 +1,8 @@
 <template>
   <transition name="fade">
-    <div class="toast-bg" v-show="visible">
+    <div class="toast-bg" v-if="visible">
       <div class="toast-wrapper">
-        <div class="toast" v-html="text"></div>
+        <div class="toast" v-html="showText"></div>
       </div>
     </div>
   </transition>
@@ -10,7 +10,7 @@
 
 <script>
   export default {
-    name: 'toast',
+    name: 'Toast',
     props: {
       text: [String, Number],
       timeout: {
@@ -20,7 +20,8 @@
     },
     data () {
       return {
-        visible: false
+        visible: false,
+        showText: ''
       }
     },
     methods: {
@@ -28,6 +29,7 @@
         this.visible = false
       },
       show () {
+        this.updateText(this.text)
         clearTimeout(this.task)
         this.task = null
         this.visible = true
@@ -39,6 +41,9 @@
         clearTimeout(this.task)
         this.task = null
         this.visible = true
+      },
+      updateText (text) {
+        this.showText = text
       }
     }
   }

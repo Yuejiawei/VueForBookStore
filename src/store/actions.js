@@ -72,7 +72,7 @@ const actions = {
     return commit('SET_SHELF_SELECTED', selected)
   },
   setShelfTitleVisible ({ commit }, visible) {
-    return commit('SET_SHELF_TITLE_VISIBLE')
+    return commit('SET_SHELF_TITLE_VISIBLE', visible)
   }
 }
 export default actions
